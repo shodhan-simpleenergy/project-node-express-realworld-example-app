@@ -2,10 +2,9 @@ import prisma from '../../../prisma/prisma-client';
 import redis from '../../../redis';
 
 const TAGS_CACHE_KEY = 'tags:all';
-const TAGS_TTL = 300; // 5 minutes
+const TAGS_TTL = 300;
 
 const getTags = async (id?: number): Promise<string[]> => {
-  // Check Redis cache first
   const cached = await redis.get(TAGS_CACHE_KEY);
   if (cached) {
     console.log('Tags served from Redis cache');
@@ -16,22 +15,15 @@ const getTags = async (id?: number): Promise<string[]> => {
   queries.push({ demo: true });
 
   if (id) {
-    queries.push({
-      id: {
-        equals: id,
-      },
-    });
+    queries.push({ id: { equals: id } });
   }
 
   const tags = await prisma.tag.findMany({
     where: { OR: queries },
-    orderBy: { articleTags: { _count: 'desc' } },
     take: 10,
   });
 
   const tagList = tags.map(t => t.name);
-
-  // Store in Redis cache
   await redis.setex(TAGS_CACHE_KEY, TAGS_TTL, JSON.stringify(tagList));
   console.log('Tags fetched from DB and cached in Redis');
 
