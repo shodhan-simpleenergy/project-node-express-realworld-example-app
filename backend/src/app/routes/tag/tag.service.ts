@@ -19,7 +19,17 @@ const getTags = async (id?: number): Promise<string[]> => {
   }
 
   const tags = await prisma.tag.findMany({
-    where: { OR: queries },
+    where: {
+      articles: {
+        some: {
+          author: {
+            OR: queries,
+          },
+        },
+      },
+    },
+    select: { name: true },
+    orderBy: { articles: { _count: 'desc' } },
     take: 10,
   });
 
