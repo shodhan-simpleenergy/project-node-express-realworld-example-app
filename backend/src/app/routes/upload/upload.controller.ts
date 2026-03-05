@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { NextFunction, Request, Response, Router } from 'express';
 import multer from 'multer';
 import auth from '../auth/auth';
@@ -14,7 +15,7 @@ router.post('/upload', auth.required, upload.single('image'), async (req: Reques
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
-    const key = `avatars/${crypto.randomUUID()}-${req.file.originalname}`;
+    const key = `avatars/${randomUUID()}-${req.file.originalname}`;
     const url = await uploadToS3(req.file.buffer, key, req.file.mimetype);
     res.json({ url });
   } catch (error) {
