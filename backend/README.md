@@ -72,3 +72,4 @@ Run the following command to:
 ```shell
 npm ci && npx prisma migrate deploy && node dist/api/main.js
 ```
+# CI/CD Auto-trigger test
