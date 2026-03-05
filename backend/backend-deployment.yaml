@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: 300931013610.dkr.ecr.us-east-1.amazonaws.com/project-devops-1/backend:v1
+        image: 300931013610.dkr.ecr.us-east-1.amazonaws.com/project-devops-1/backend:v2
         ports:
         - containerPort: 3000
         env:
@@ -28,3 +28,18 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: JWT_SECRET
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: REDIS_URL
+        - name: S3_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: S3_BUCKET
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: AWS_REGION
